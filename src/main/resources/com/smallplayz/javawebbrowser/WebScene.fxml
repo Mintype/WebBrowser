@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.smallplayz.javawebbrowser.WebController">
+   <center>
+      <TabPane fx:id="tabPane" tabClosingPolicy="SELECTED_TAB" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Google">
+               <content>
+                  <BorderPane>
+                     <center>
+                        <WebView fx:id="webView" prefHeight="-1.0" prefWidth="-1.0" BorderPane.alignment="CENTER" />
+                     </center>
+                     <top>
+                        <GridPane fx:id="gridPane" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" maxWidth="638.9999755859375" minWidth="10.0" prefWidth="638.9999755859375" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="589.6000366210938" minWidth="10.0" prefWidth="63.80002441406248" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="589.6000366210938" minWidth="10.0" prefWidth="99.20004272460938" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="searchBar" prefWidth="484.0">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchButton" prefWidth="58.0" text="Search" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+                                 </padding>
+                              </Button>
+                           </children>
+                        </GridPane>
+                     </top>
+                  </BorderPane>
+               </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <left>
+      <VBox prefHeight="400.0" prefWidth="50.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="newTabButton" alignment="CENTER" mnemonicParsing="false" onAction="#newTab" text="+">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>

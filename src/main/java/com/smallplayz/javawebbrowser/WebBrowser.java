@@ -14,12 +14,14 @@ import java.io.IOException;
 public class WebBrowser extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Test.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("WebScene.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
         //stage.getIcons().add(new Image("icon.png"));
-        //stage.setTitle("Bro web browser");
+        stage.setTitle("WebBrowser");
+        stage.setMinHeight(520);
+        stage.setMinWidth(850);
         stage.setScene(scene);
         stage.show();
     }
