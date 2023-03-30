@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.smallplayz.javawebbrowser.WebController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.smallplayz.javawebbrowser.WebController">
    <center>
       <TabPane fx:id="tabPane" tabClosingPolicy="SELECTED_TAB" BorderPane.alignment="CENTER">
         <tabs>
@@ -56,6 +56,11 @@
       <VBox prefHeight="400.0" prefWidth="50.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="newTabButton" alignment="CENTER" mnemonicParsing="false" onAction="#newTab" text="+">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="chatGPTButton" alignment="CENTER" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#chatGPT" text="AI">
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />
                </VBox.margin>

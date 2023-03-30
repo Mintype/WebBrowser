@@ -6,8 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
@@ -18,6 +20,8 @@ public class WebController implements Initializable {
     @FXML
     private Button newTabButton;
     @FXML
+    private Button chatGPTButton;
+    @FXML
     private TabPane tabPane;
     @FXML
     private WebView webView;
@@ -25,8 +29,12 @@ public class WebController implements Initializable {
     private TextField searchBar;
     @FXML
     private GridPane gridPane;
+    @FXML
+    private BorderPane borderPane;
 
     private WebEngine engine;
+
+    private boolean chatGPTopen = false;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -55,5 +63,20 @@ public class WebController implements Initializable {
         tabPane.getTabs().add(newTab);
 
         tabPane.getSelectionModel().select(newTab);
+    }
+    public void chatGPT() {
+        if(!chatGPTopen) {
+            chatGPTopen = true;
+            System.out.println("ChatGPT opened");
+
+            AnchorPane anchorPane = new AnchorPane();
+            anchorPane.setMinSize(100, 100);
+            borderPane.setRight(anchorPane);
+
+        } else {
+            chatGPTopen = false;
+            System.out.println("ChatGPT closed");
+            borderPane.setRight(null);
+        }
     }
 }
