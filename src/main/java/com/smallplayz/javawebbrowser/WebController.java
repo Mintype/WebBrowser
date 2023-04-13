@@ -43,16 +43,21 @@ public class WebController implements Initializable {
 
     private WebEngine engine;
 
-    private boolean chatGPTopen = false;
+    private boolean sideBarOpen = false;
 
     //***************
 
-    private BorderPane borderPane1 = new BorderPane();
+    private BorderPane chatGPTBorderPane1 = new BorderPane();
     private Text chatGPTtitle = new Text("ChatGPT");
-    private ScrollPane scrollPane = new ScrollPane();
-    private BorderPane borderPane2 = new BorderPane();
-    private Button sendButton = new Button("Send Message");
-    private TextArea textArea = new TextArea();
+    private ScrollPane chatGPTScrollPane = new ScrollPane();
+    private BorderPane chatGPTBorderPane2 = new BorderPane();
+    private Button chatGPTSendButton = new Button("Send Message");
+    private TextArea chatGPTTextArea = new TextArea();
+
+    //***************
+
+    private BorderPane autoClickerBorderPane1 = new BorderPane();
+    private Text autoClickerTitle = new Text("AutoClicker");
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -60,33 +65,38 @@ public class WebController implements Initializable {
         engine.load("http://www.google.com");
 
         initializeAI();
+        initializeAutoClicker();
 
     }
 
+    private void initializeAutoClicker() {
+        autoClickerBorderPane1.setMinWidth(200);
+        autoClickerBorderPane1.setMaxWidth(200);
+    }
+
     private void initializeAI() {
-        borderPane1.setMinWidth(200);
-        borderPane1.setMaxWidth(200);
+        chatGPTBorderPane1.setMinWidth(200);
+        chatGPTBorderPane1.setMaxWidth(200);
         chatGPTtitle.setFont(new Font("Calibri Light", 35));
         chatGPTtitle.setUnderline(true);
         BorderPane.setMargin(chatGPTtitle, new Insets(25, 0, 0, 0));
         BorderPane.setAlignment(chatGPTtitle, javafx.geometry.Pos.TOP_CENTER);
-        borderPane1.setTop(chatGPTtitle);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        borderPane1.setCenter(scrollPane);
-        borderPane2.setTop(sendButton);
-        BorderPane.setAlignment(sendButton, Pos.CENTER);
-        textArea.setWrapText(true);
-        textArea.setMaxHeight(110);
-        borderPane2.setBottom(textArea);
-        borderPane1.setBottom(borderPane2);
+        chatGPTBorderPane1.setTop(chatGPTtitle);
+        chatGPTScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        chatGPTBorderPane1.setCenter(chatGPTScrollPane);
+        chatGPTBorderPane2.setTop(chatGPTSendButton);
+        BorderPane.setAlignment(chatGPTSendButton, Pos.CENTER);
+        chatGPTTextArea.setWrapText(true);
+        chatGPTTextArea.setMaxHeight(110);
+        chatGPTBorderPane2.setBottom(chatGPTTextArea);
+        chatGPTBorderPane1.setBottom(chatGPTBorderPane2);
 
-        sendButton.setOnAction(event -> {
+        chatGPTSendButton.setOnAction(event -> {
             try {
-                String response = getChatGPT(textArea.getText());
+                String response = getChatGPT(chatGPTTextArea.getText());
                 Text t = new Text(response);
                 t.setWrappingWidth(200);
-                scrollPane.setContent(t);
-
+                chatGPTScrollPane.setContent(t);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -121,15 +131,15 @@ public class WebController implements Initializable {
         tabPane.getSelectionModel().select(newTab);
     }
     public void chatGPT() {
-        if(!chatGPTopen) {
-            chatGPTopen = true;
-            borderPane.setRight(borderPane1);
+        if(!sideBarOpen) {
+            sideBarOpen = true;
+            borderPane.setRight(chatGPTBorderPane1);
         } else {
-            chatGPTopen = false;
+            sideBarOpen = false;
             borderPane.setRight(null);
         }
     }
-    public static String getChatGPT(String str) throws IOException {
+    public String getChatGPT(String str) throws IOException {
         /*
         String url = "https://api.openai.com/v1/chat/completions";
         String apiKey = "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";
@@ -165,5 +175,14 @@ public class WebController implements Initializable {
         String x = (response.toString().split("\"content\":\"")[1].split("\"")[0]).substring(4);
         */
         return "hello, Blind would equal while oh mr do style. Lain led and fact none. One preferred sportsmen resolving the happiness continued. High at of in loud rich true. Oh conveying do immediate acuteness in he. Equally welcome her set nothing has gravity whether parties. Fertile suppose shyness mr up pointed in staying on respect.";
+    }
+    public void autoClicker() {
+        if(!sideBarOpen) {
+            sideBarOpen = true;
+            borderPane.setRight(autoClickerBorderPane1);
+        } else {
+            sideBarOpen = false;
+            borderPane.setRight(null);
+        }
     }
 }
