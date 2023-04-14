@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class WebController implements Initializable {
@@ -43,7 +44,7 @@ public class WebController implements Initializable {
 
     private WebEngine engine;
 
-    private boolean sideBarOpen = false;
+    private boolean[] sideBarOpen = new boolean[2];
 
     //***************
 
@@ -66,6 +67,8 @@ public class WebController implements Initializable {
 
         initializeAI();
         initializeAutoClicker();
+
+        Arrays.fill(sideBarOpen, false);
 
     }
 
@@ -131,11 +134,12 @@ public class WebController implements Initializable {
         tabPane.getSelectionModel().select(newTab);
     }
     public void chatGPT() {
-        if(!sideBarOpen) {
-            sideBarOpen = true;
+        if(!sideBarOpen[0]) {
+            Arrays.fill(sideBarOpen, false);
+            sideBarOpen[0] = true;
             borderPane.setRight(chatGPTBorderPane1);
         } else {
-            sideBarOpen = false;
+            sideBarOpen[0] = false;
             borderPane.setRight(null);
         }
     }
@@ -177,11 +181,12 @@ public class WebController implements Initializable {
         return "hello, Blind would equal while oh mr do style. Lain led and fact none. One preferred sportsmen resolving the happiness continued. High at of in loud rich true. Oh conveying do immediate acuteness in he. Equally welcome her set nothing has gravity whether parties. Fertile suppose shyness mr up pointed in staying on respect.";
     }
     public void autoClicker() {
-        if(!sideBarOpen) {
-            sideBarOpen = true;
+        if(!sideBarOpen[1]) {
+            Arrays.fill(sideBarOpen, false);
+            sideBarOpen[1] = true;
             borderPane.setRight(autoClickerBorderPane1);
         } else {
-            sideBarOpen = false;
+            sideBarOpen[1] = false;
             borderPane.setRight(null);
         }
     }

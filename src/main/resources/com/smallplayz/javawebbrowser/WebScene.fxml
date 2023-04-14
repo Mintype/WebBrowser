@@ -65,7 +65,7 @@
                   <Insets left="10.0" top="10.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="autoClickerButton1" alignment="CENTER" mnemonicParsing="false" onAction="#chatGPT" text="AC">
+            <Button fx:id="autoClickerButton1" alignment="CENTER" mnemonicParsing="false" onAction="#autoClicker" text="AC">
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />
                </VBox.margin>
