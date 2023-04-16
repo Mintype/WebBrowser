@@ -1,5 +1,7 @@
 package com.smallplayz.javawebbrowser;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -13,9 +15,14 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.parser.ParserDelegator;
 
 public class WebController implements Initializable {
     @FXML
@@ -32,6 +39,8 @@ public class WebController implements Initializable {
     private GridPane gridPane;
     @FXML
     private BorderPane borderPane;
+    @FXML
+    private Tab defaultTab;
 
     private WebEngine engine;
 
@@ -56,11 +65,34 @@ public class WebController implements Initializable {
         engine = webView.getEngine();
         engine.load("http://www.google.com");
 
+        initializeDefaultTab();
         initializeAI();
         initializeAutoClicker();
 
         Arrays.fill(sideBarOpen, false);
 
+        try {
+            search();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initializeDefaultTab() {
+        defaultTab.setOnCloseRequest(event -> {
+            tabPane.getTabs().remove(defaultTab);
+            if(tabPane.getTabs().isEmpty()) {
+                System.out.println("All Tabs Closed");
+                allTabsClosed();
+            }
+        });
+    }
+
+    private void allTabsClosed() {
+        borderPane.setCenter(null);
+        BorderPane borderPane1 = new BorderPane();
+        borderPane1.setCenter(new Text("Hello World"));
+        borderPane.setCenter(borderPane1);
     }
 
     private void initializeAutoClicker() {
@@ -118,14 +150,19 @@ public class WebController implements Initializable {
 
         newTab.setContent(boarderPane);
         newTab.setOnCloseRequest(event -> {
-            if(tabPane.getTabs().isEmpty())
+            tabPane.getTabs().remove(newTab);
+            if(tabPane.getTabs().isEmpty()) {
                 System.out.println("All Tabs Closed");
+                allTabsClosed();
+            }
         });
 
         engine = webView1.getEngine();
         engine.load("https://www.google.com");
 
         tabPane.getTabs().add(newTab);
+
+        borderPane.setCenter(tabPane);
 
         tabPane.getSelectionModel().select(newTab);
     }
@@ -185,5 +222,10 @@ public class WebController implements Initializable {
             sideBarOpen[1] = false;
             borderPane.setRight(null);
         }
+    }
+    public void search() throws IOException {
+        engine.load("https://www." + searchBar.getText());
+        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+        selectedTab.setText(engine.getTitle());
     }
 }

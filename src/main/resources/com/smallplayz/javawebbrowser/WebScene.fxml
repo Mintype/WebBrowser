@@ -16,7 +16,7 @@
    <center>
       <TabPane fx:id="tabPane" tabClosingPolicy="SELECTED_TAB" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Google">
+          <Tab fx:id="defaultTab" text="Google">
                <content>
                   <BorderPane>
                      <center>
