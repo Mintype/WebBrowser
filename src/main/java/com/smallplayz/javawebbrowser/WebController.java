@@ -1,27 +1,18 @@
 package com.smallplayz.javawebbrowser;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -75,6 +66,11 @@ public class WebController implements Initializable {
     private void initializeAutoClicker() {
         autoClickerBorderPane1.setMinWidth(200);
         autoClickerBorderPane1.setMaxWidth(200);
+        autoClickerTitle.setFont(new Font("Calibri Light", 35));
+        autoClickerTitle.setUnderline(true);
+        BorderPane.setMargin(autoClickerTitle, new Insets(25, 0, 0, 0));
+        BorderPane.setAlignment(autoClickerTitle, javafx.geometry.Pos.TOP_CENTER);
+        autoClickerBorderPane1.setTop(autoClickerTitle);
     }
 
     private void initializeAI() {
