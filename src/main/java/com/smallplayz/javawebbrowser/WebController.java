@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.swing.text.html.HTMLDocument;
@@ -46,6 +47,8 @@ public class WebController implements Initializable {
 
     private boolean[] sideBarOpen = new boolean[2];
 
+    private ArrayList<Tab> tabs = new ArrayList<Tab>();
+
     //***************
 
     private BorderPane chatGPTBorderPane1 = new BorderPane();
@@ -70,12 +73,6 @@ public class WebController implements Initializable {
         initializeAutoClicker();
 
         Arrays.fill(sideBarOpen, false);
-
-        try {
-            search();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void initializeDefaultTab() {
@@ -86,6 +83,8 @@ public class WebController implements Initializable {
                 allTabsClosed();
             }
         });
+
+        tabs.add(defaultTab);
     }
 
     private void allTabsClosed() {
@@ -134,8 +133,16 @@ public class WebController implements Initializable {
         });
     }
 
-    public void searchButton() {
+    public void searchButton() throws IOException {
         engine.load("http://www." + searchBar.getText());
+        HTMLEditorKit htmlKit = new HTMLEditorKit();
+        HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
+        HTMLEditorKit.Parser parser = new ParserDelegator();
+        parser.parse(new InputStreamReader(new URL("https://www."+searchBar.getText()).openStream()),
+                htmlDoc.getReader(0), true);
+
+        System.out.println(htmlDoc.getProperty("title").toString());
+        tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
     }
     public void newTab() {
         Tab newTab = new Tab("New Tab");
@@ -156,6 +163,8 @@ public class WebController implements Initializable {
                 allTabsClosed();
             }
         });
+
+        tabs.add(newTab);
 
         engine = webView1.getEngine();
         engine.load("https://www.google.com");
@@ -222,10 +231,5 @@ public class WebController implements Initializable {
             sideBarOpen[1] = false;
             borderPane.setRight(null);
         }
-    }
-    public void search() throws IOException {
-        engine.load("https://www." + searchBar.getText());
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        selectedTab.setText(engine.getTitle());
     }
 }
