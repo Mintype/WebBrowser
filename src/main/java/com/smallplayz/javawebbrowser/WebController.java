@@ -1,5 +1,6 @@
 package com.smallplayz.javawebbrowser;
 
+import javafx.concurrent.Worker;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -47,8 +48,6 @@ public class WebController implements Initializable {
 
     private boolean[] sideBarOpen = new boolean[2];
 
-    private ArrayList<Tab> tabs = new ArrayList<Tab>();
-
     //***************
 
     private BorderPane chatGPTBorderPane1 = new BorderPane();
@@ -68,6 +67,21 @@ public class WebController implements Initializable {
         engine = webView.getEngine();
         engine.load("http://www.google.com");
 
+        engine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (Worker.State.SUCCEEDED.equals(newValue)) {
+                HTMLEditorKit htmlKit = new HTMLEditorKit();
+                HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
+                HTMLEditorKit.Parser parser = new ParserDelegator();
+                try {
+                    parser.parse(new InputStreamReader(new URL(engine.getLocation()).openStream()),
+                            htmlDoc.getReader(0), true);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
+            }
+        });
+
         initializeDefaultTab();
         initializeAI();
         initializeAutoClicker();
@@ -83,8 +97,6 @@ public class WebController implements Initializable {
                 allTabsClosed();
             }
         });
-
-        tabs.add(defaultTab);
     }
 
     private void allTabsClosed() {
@@ -140,8 +152,6 @@ public class WebController implements Initializable {
         HTMLEditorKit.Parser parser = new ParserDelegator();
         parser.parse(new InputStreamReader(new URL("https://www."+searchBar.getText()).openStream()),
                 htmlDoc.getReader(0), true);
-
-        System.out.println(htmlDoc.getProperty("title").toString());
         tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
     }
     public void newTab() {
@@ -163,8 +173,6 @@ public class WebController implements Initializable {
                 allTabsClosed();
             }
         });
-
-        tabs.add(newTab);
 
         engine = webView1.getEngine();
         engine.load("https://www.google.com");
