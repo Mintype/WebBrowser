@@ -8,8 +8,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -22,6 +26,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
@@ -64,6 +70,13 @@ public class WebController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        initializeEngine();
+        initializeDefaultTab();
+        initializeAI();
+        initializeAutoClicker();
+    }
+
+    private void initializeEngine() {
         engine = webView.getEngine();
         engine.load("http://www.google.com");
 
@@ -81,12 +94,6 @@ public class WebController implements Initializable {
                 tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
             }
         });
-
-        initializeDefaultTab();
-        initializeAI();
-        initializeAutoClicker();
-
-        Arrays.fill(sideBarOpen, false);
     }
 
     private void initializeDefaultTab() {
@@ -111,9 +118,79 @@ public class WebController implements Initializable {
         autoClickerBorderPane1.setMaxWidth(200);
         autoClickerTitle.setFont(new Font("Calibri Light", 35));
         autoClickerTitle.setUnderline(true);
-        BorderPane.setMargin(autoClickerTitle, new Insets(25, 0, 0, 0));
+        BorderPane.setMargin(autoClickerTitle, new Insets(25, 0, 25, 0));
         BorderPane.setAlignment(autoClickerTitle, javafx.geometry.Pos.TOP_CENTER);
         autoClickerBorderPane1.setTop(autoClickerTitle);
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.TOP_CENTER);
+        Text clickIntervalText = new Text("Click Interval (ms)");
+        VBox.setMargin(clickIntervalText, new Insets(0, 0, 5, 0));
+
+        TextField textFieldAutoClickerMiliSeconds = new TextField();
+        textFieldAutoClickerMiliSeconds.setMinWidth(100);
+        textFieldAutoClickerMiliSeconds.setMaxWidth(100);
+        VBox.setMargin(textFieldAutoClickerMiliSeconds, new Insets(0, 0, 15, 0));
+
+        Text clickOptionsText = new Text("Click Options");
+        VBox.setMargin(clickOptionsText, new Insets(0, 0, 5, 0));
+        Button clickOptionsToggleButton = new Button("Left Click");
+        VBox.setMargin(clickOptionsToggleButton, new Insets(0, 0, 15, 0));
+        clickOptionsToggleButton.setMinWidth(100);
+        clickOptionsToggleButton.setMaxWidth(100);
+        clickOptionsToggleButton.setOnAction(event -> {
+            if(clickOptionsToggleButton.getText().equals("Left Click"))
+                clickOptionsToggleButton.setText("Right Click");
+            else
+                clickOptionsToggleButton.setText("Left Click");
+        });
+
+        Text clickRepeatText = new Text("Click Repeat");
+        VBox.setMargin(clickRepeatText, new Insets(0, 0, 5, 0));
+
+        RadioButton clickRepeatRadioButtonNum = new RadioButton("Repeat");
+        VBox.setMargin(clickRepeatRadioButtonNum, new Insets(0, 0, 2, 0));
+        RadioButton clickRepeatRadioButtonInf = new RadioButton("Infinite");
+        VBox.setMargin(clickRepeatRadioButtonInf, new Insets(0, 0, 2, 0));
+        TextField clickRepeatTextField = new TextField();
+        clickRepeatTextField.setMinWidth(100);
+        clickRepeatTextField.setMaxWidth(100);
+
+        // Set a TextFormatter to filter out non-numeric characters
+        Pattern pattern = Pattern.compile("\\d*");
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            if (pattern.matcher(newText).matches()) {
+                return change;
+            }
+            return null;
+        };
+        TextFormatter<String> textFormatter = new TextFormatter<>(filter);
+        clickRepeatTextField.setTextFormatter(textFormatter);
+
+
+        clickRepeatRadioButtonNum.setOnAction(event -> {
+            if (clickRepeatRadioButtonNum.isSelected()) {
+                clickRepeatRadioButtonInf.setSelected(false);
+                clickRepeatTextField.setEditable(true);
+            }
+        });
+
+        clickRepeatRadioButtonInf.setOnAction(event -> {
+            if (clickRepeatRadioButtonInf.isSelected()) {
+                clickRepeatRadioButtonNum.setSelected(false);
+                clickRepeatTextField.setEditable(false);
+            }
+        });
+
+        vBox.getChildren().add(clickIntervalText);
+        vBox.getChildren().add(textFieldAutoClickerMiliSeconds);
+        vBox.getChildren().add(clickOptionsText);
+        vBox.getChildren().add(clickOptionsToggleButton);
+        vBox.getChildren().add(clickRepeatText);
+        vBox.getChildren().add(clickRepeatRadioButtonNum);
+        vBox.getChildren().add(clickRepeatRadioButtonInf);
+        vBox.getChildren().add(clickRepeatTextField);
+        autoClickerBorderPane1.setCenter(vBox);
     }
 
     private void initializeAI() {
@@ -146,13 +223,18 @@ public class WebController implements Initializable {
     }
 
     public void searchButton() throws IOException {
-        engine.load("http://www." + searchBar.getText());
-        HTMLEditorKit htmlKit = new HTMLEditorKit();
-        HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
-        HTMLEditorKit.Parser parser = new ParserDelegator();
-        parser.parse(new InputStreamReader(new URL("https://www."+searchBar.getText()).openStream()),
-                htmlDoc.getReader(0), true);
-        tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
+        if(!(searchBar.getText().contains(" ") || searchBar.getText().isEmpty())) {
+            if(searchBar.getText().startsWith("https://www."))
+                engine.load(searchBar.getText());
+            else
+                engine.load("https://www." + searchBar.getText());
+            HTMLEditorKit htmlKit = new HTMLEditorKit();
+            HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
+            HTMLEditorKit.Parser parser = new ParserDelegator();
+            parser.parse(new InputStreamReader(new URL("https://www." + searchBar.getText()).openStream()),
+                    htmlDoc.getReader(0), true);
+            tabPane.getSelectionModel().getSelectedItem().setText(htmlDoc.getProperty("title").toString());
+        }
     }
     public void newTab() {
         Tab newTab = new Tab("New Tab");
